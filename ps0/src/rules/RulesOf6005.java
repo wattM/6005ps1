@@ -55,7 +55,7 @@ public class RulesOf6005 {
      * @param args unused
      */
     public static void main(String[] args) {
-        System.out.println("You may certainly use code you wrote yourself: " +
+        System.out.println("You may certainly NOT use code you wrote yourself: " +
             RulesOf6005.mayUseCodeInAssignment(true, false, true, true, true));
     }
 }
