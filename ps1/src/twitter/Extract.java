@@ -3,8 +3,11 @@
  */
 package twitter;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.time.Instant;
+import java.util.regex.*;
 
 /**
  * Extract consists of methods that extract information from a list of tweets.
@@ -24,7 +27,27 @@ public class Extract {
      *         every tweet in the list.
      */
     public static Timespan getTimespan(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+        Instant[] tstamps = new Instant[tweets.size()];
+        
+        for(int i = 0; i < tweets.size(); i++) {
+            tstamps[i] = tweets.get(i).getTimestamp();
+        }
+        
+        Instant start = tstamps[0];
+        Instant end = tstamps[0];
+        
+        for(int i = 0; i < tstamps.length; i++) {
+            if(tstamps[i].isBefore(start)) {
+                start = tstamps[i];
+            }
+            
+            else if(tstamps[i].isAfter(end)) {
+                end = tstamps[i];
+            }
+        }
+        
+        Timespan tspan = new Timespan(start, end);
+        return tspan;
     }
 
     /**
@@ -43,7 +66,29 @@ public class Extract {
      *         include a username at most once.
      */
     public static Set<String> getMentionedUsers(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+        String[] tweetText = new String[tweets.size()];
+        Pattern p = Pattern.compile("@");
+        HashSet<String> mentionedUsers = new HashSet<String>();
+        
+        //Stash each tweet's text in a string array
+        for(int i = 0; i < tweetText.length; i++) {
+            tweetText[i] = tweets.get(i).getText();
+        }
+        
+        //Split text into words and stash them in an array to find matches
+        for(String text : tweetText) {
+            String[] words = text.split("\\s+");
+            
+            for(String word : words) {
+                if(word.matches("(@\\w+)")){
+                    System.out.printf("Found username %s%n", word);
+                    mentionedUsers.add(word);
+                }   
+            }
+        
+        }
+        
+        return mentionedUsers;
     }
 
 }
