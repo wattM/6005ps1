@@ -66,23 +66,15 @@ public class Extract {
      *         include a username at most once.
      */
     public static Set<String> getMentionedUsers(List<Tweet> tweets) {
-        String[] tweetText = new String[tweets.size()];
-        Pattern p = Pattern.compile("@");
         HashSet<String> mentionedUsers = new HashSet<String>();
         
-        //Store each tweet's text in a string array
-        for(int i = 0; i < tweetText.length; i++) {
-            tweetText[i] = tweets.get(i).getText();
-        }
-        
         //Split text into words and store them in an array to find matches
-        for(String text : tweetText) {
-            String[] words = text.split("\\s+");
+        for(Tweet tweet : tweets) {
+            String[] words = tweet.getText().split("\\s+");
             
             for(String word : words) {
                 if(word.matches("(@\\w+)")){
                     word = word.substring(1);
-                    System.out.printf("Found username %s%n", word);
                     mentionedUsers.add(word);
                 }   
             }

@@ -21,9 +21,13 @@ public class FilterTest {
     
     private static final Instant d1 = Instant.parse("2016-02-17T10:00:00Z");
     private static final Instant d2 = Instant.parse("2016-02-17T11:00:00Z");
+    private static final Instant d3 = Instant.parse("2016-02-17T12:00:00Z");
+    private static final Instant d4 = Instant.parse("2016-02-17T13:00:00Z");
     
     private static final Tweet tweet1 = new Tweet(1, "alyssa", "is it reasonable to talk about rivest so much?", d1);
     private static final Tweet tweet2 = new Tweet(2, "bbitdiddle", "rivest talk in 30 minutes #hype", d2);
+    private static final Tweet tweet3 = new Tweet(3, "burkenstack", "i love birkenstocks :D #birkenstocks", d3);
+    private static final Tweet tweet4 = new Tweet(1, "alyssa", "why can't i stop talking about rivest? WHY?", d4);
     
     @Test(expected=AssertionError.class)
     public void testAssertionsEnabled() {
@@ -39,6 +43,27 @@ public class FilterTest {
     }
     
     @Test
+    public void testWrittenByBadUsername() {
+        List<Tweet> writtenBy = Filter.writtenBy(Arrays.asList(tweet1, tweet2), "alyssa!");
+        
+        assertEquals("expected empty list", 0, writtenBy.size());
+    }
+    
+    @Test
+    public void testWrittenByMultipleTweetsMultipleResults() {
+        List<Tweet> writtenBy = Filter.writtenBy(Arrays.asList(tweet1, tweet2, tweet3, tweet4), "alyssa");
+        
+        assertEquals("expected list size > 1", 2, writtenBy.size());
+        assertTrue("expected list to contain tweet", writtenBy.contains(tweet1) && writtenBy.contains(tweet4));
+    }
+    
+    public void testWrittenBySingleTweetNoResults() {
+        List<Tweet> writtenBy = Filter.writtenBy(Arrays.asList(tweet1, tweet2), "burkenstack");
+        
+        assertEquals("expected size 0 list", 0, writtenBy.size());
+    }
+    
+    @Test
     public void testInTimespanMultipleTweetsMultipleResults() {
         Instant testStart = Instant.parse("2016-02-17T09:00:00Z");
         Instant testEnd = Instant.parse("2016-02-17T12:00:00Z");
@@ -51,8 +76,28 @@ public class FilterTest {
     }
     
     @Test
-    public void testContaining() {
+    public void testInTimespanOneTweetNoResults() {
+        Instant testStart = Instant.parse("2017-02-17T09:00:00Z");
+        Instant testEnd = Instant.parse("2017-02-17T12:00:00Z");
+        
+        List<Tweet> inTimespan = Filter.inTimespan(Arrays.asList(tweet1), new Timespan(testStart, testEnd));
+        assertTrue("expected empty list", inTimespan.isEmpty());
+    }
+    
+    @Test
+    public void testContainingOneWord() {
         List<Tweet> containing = Filter.containing(Arrays.asList(tweet1, tweet2), Arrays.asList("talk"));
+        
+        assertFalse("expected non-empty list", containing.isEmpty());
+        assertTrue("expected list to contain tweets", containing.containsAll(Arrays.asList(tweet1, tweet2)));
+        assertEquals("expected same order", 0, containing.indexOf(tweet1));
+        
+        containing = Filter.containing(Arrays.asList(tweet1, tweet2), Arrays.asList("funk"));
+        assertTrue("expected empty list", containing.isEmpty());
+    }
+    
+    public void testContainingTwoWords() {
+        List<Tweet> containing = Filter.containing(Arrays.asList(tweet1, tweet2), Arrays.asList("talk", "rivest"));
         
         assertFalse("expected non-empty list", containing.isEmpty());
         assertTrue("expected list to contain tweets", containing.containsAll(Arrays.asList(tweet1, tweet2)));

@@ -3,7 +3,10 @@
  */
 package twitter;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.*;
+import java.util.Scanner;
 
 /**
  * Filter consists of methods that filter a list of tweets for those matching a
@@ -27,7 +30,21 @@ public class Filter {
      *         in the same order as in the input list.
      */
     public static List<Tweet> writtenBy(List<Tweet> tweets, String username) {
-        throw new RuntimeException("not implemented");
+        ArrayList<Tweet> userTweets = new ArrayList<Tweet>();
+        
+        if(username.matches("\\w+")) { //Checks whether username is valid
+            for(Tweet tweet : tweets) {
+                if(tweet.getAuthor().equals(username)) {
+                    userTweets.add(tweet);
+                }
+            }
+        }
+        else {
+            System.out.println("Invalid Twitter username");
+        }
+        
+        return userTweets;
+        
     }
 
     /**
@@ -41,7 +58,16 @@ public class Filter {
      *         in the same order as in the input list.
      */
     public static List<Tweet> inTimespan(List<Tweet> tweets, Timespan timespan) {
-        throw new RuntimeException("not implemented");
+        ArrayList<Tweet> tweetsInTimespan = new ArrayList<Tweet>();
+        
+        for(Tweet tweet : tweets) {
+            if(tweet.getTimestamp().isAfter(timespan.getStart()) 
+               && tweet.getTimestamp().isBefore(timespan.getEnd())){ //if tweet is within the timespan
+                tweetsInTimespan.add(tweet);
+            }
+        }
+        
+        return tweetsInTimespan;
     }
 
     /**
@@ -60,7 +86,27 @@ public class Filter {
      *         same order as in the input list.
      */
     public static List<Tweet> containing(List<Tweet> tweets, List<String> words) {
-        throw new RuntimeException("not implemented");
+        ArrayList<Tweet> tweetsContaining = new ArrayList<Tweet>();
+        
+        for(Tweet tweet : tweets) {
+            boolean wordFound = false;
+            
+            for(String word : words) {
+                Scanner sc = new Scanner(tweet.getText());
+                
+                while(!wordFound && sc.hasNext()) {
+                    wordFound = sc.hasNext(word);
+                    
+                    if(wordFound) {
+                        tweetsContaining.add(tweet);
+                    }
+                    
+                    sc.next();
+                }
+            } 
+        }
+        
+        return tweetsContaining;
     }
 
 }
