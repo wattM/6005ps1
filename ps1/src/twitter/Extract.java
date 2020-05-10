@@ -70,17 +70,18 @@ public class Extract {
         Pattern p = Pattern.compile("@");
         HashSet<String> mentionedUsers = new HashSet<String>();
         
-        //Stash each tweet's text in a string array
+        //Store each tweet's text in a string array
         for(int i = 0; i < tweetText.length; i++) {
             tweetText[i] = tweets.get(i).getText();
         }
         
-        //Split text into words and stash them in an array to find matches
+        //Split text into words and store them in an array to find matches
         for(String text : tweetText) {
             String[] words = text.split("\\s+");
             
             for(String word : words) {
                 if(word.matches("(@\\w+)")){
+                    word = word.substring(1);
                     System.out.printf("Found username %s%n", word);
                     mentionedUsers.add(word);
                 }   

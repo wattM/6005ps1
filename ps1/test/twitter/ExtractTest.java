@@ -77,9 +77,9 @@ public class ExtractTest {
     
     @Test public void testGetMentionedUsersTwoTweetThreeMentions() {
         Set<String> testSet = new HashSet<String>();
-        testSet.add("@alyssa");
-        testSet.add("@bbitdiddle");
-        testSet.add("@buttdoctor");
+        testSet.add("alyssa");
+        testSet.add("bbitdiddle");
+        testSet.add("buttdoctor");
         Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet2, tweet3));
         
         assertTrue("expected set contents", testSet.equals(mentionedUsers));
