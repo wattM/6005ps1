@@ -4,8 +4,16 @@
 package twitter;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * SocialNetwork provides methods that operate on a social network.
@@ -41,7 +49,23 @@ public class SocialNetwork {
      *         either authors or @-mentions in the list of tweets.
      */
     public static Map<String, Set<String>> guessFollowsGraph(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+        Map<String, Set<String>> followsGraph = new HashMap<String, Set<String>>();
+        
+        for(Tweet tweet : tweets) {
+            ArrayList<Tweet> tempList = new ArrayList<>(List.of(tweet));
+            Set<String> tempSet = Extract.getMentionedUsers(tempList);
+            
+            if(followsGraph.containsKey(tweet.getAuthor())) {
+                //Add tweet's mentionedUsers set to existing author's mentionedUsers set
+                followsGraph.get(tweet.getAuthor()).addAll(tempSet);
+            }
+            
+            else {
+                followsGraph.put(tweet.getAuthor(), tempSet);
+            }
+        }
+        
+        return followsGraph;
     }
 
     /**
@@ -54,7 +78,36 @@ public class SocialNetwork {
      *         descending order of follower count.
      */
     public static List<String> influencers(Map<String, Set<String>> followsGraph) {
-        throw new RuntimeException("not implemented");
+        Map<String, Integer> influencerMap = new HashMap<String, Integer>();
+        
+        for(Entry<String, Set<String>> entry : followsGraph.entrySet()) { //loops over the followsGraph Map
+            if(!influencerMap.containsKey(entry.getKey())) {
+                influencerMap.put(entry.getKey(), 1);
+            }
+            else {
+                int count = influencerMap.get(entry.getKey());
+                influencerMap.put(entry.getKey(), count + 1);
+            }
+            
+            for(String user : followsGraph.get(entry.getKey())) { //loops over the mentionedUser Set
+                if(!influencerMap.containsKey(user)) {
+                    influencerMap.put(user, 1);
+                }
+                else {
+                    int count = influencerMap.get(user);
+                    influencerMap.put(user, count + 1);
+                }
+            }
+        }
+        
+        Map<String, Integer> sortedMap = new LinkedHashMap<>();
+        influencerMap.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
+        
+        List<String> influencerList = new ArrayList<String>(sortedMap.keySet());
+        
+        return influencerList;
     }
 
 }

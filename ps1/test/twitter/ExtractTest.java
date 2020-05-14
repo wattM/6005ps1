@@ -26,7 +26,7 @@ public class ExtractTest {
     
     private static final Tweet tweet1 = new Tweet(1, "alyssa", "is it reasonable to talk about rivest so much?", d1);
     private static final Tweet tweet2 = new Tweet(2, "bbitdiddle", "@alyssa @buttdoctor rivest talk in 30 minutes #hype", d2);
-    private static final Tweet tweet3 = new Tweet(3, "buttdoctor", "@alyssa @bbitdiddle im a butt doctor email me at buttdoctor@gmail.com", d3);
+    private static final Tweet tweet3 = new Tweet(3, "buttdoctor", "@bbitdiddle im a butt doctor email me at buttdoctor@gmail.com", d3);
     
     @Test(expected=AssertionError.class)
     public void testAssertionsEnabled() {

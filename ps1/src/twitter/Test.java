@@ -2,20 +2,25 @@ package twitter;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.regex.Pattern;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Map.Entry;
 
 public class Test 
 {
     public static void main(String[] args) 
     {
-        List<String> itemList = new ArrayList<String>();
-        itemList.add("item1");
-        itemList.add("item2");
-        itemList.add("item3");
-
-        String[] itemsArray = new String[itemList.size()];
-        itemsArray = itemList.toArray(itemsArray);
-
-        for(String s : itemsArray)
-            System.out.println(s);
+        Map<Integer, String> map = new HashMap<Integer, String>();
+        map.put(1, "one");
+        map.put(2, "two");
+        map.put(3, "three");
+        
+        Set<Entry<Integer, String>> entery = map.entrySet();
+        
+        for (Entry entry : entery) {
+            
+        }
     }
 }
